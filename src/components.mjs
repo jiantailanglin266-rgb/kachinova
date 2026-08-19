@@ -297,3 +297,34 @@ export function honeypot() {
     <label>この欄は入力しないでください<input type="text" name="_company_url" tabindex="-1" autocomplete="off"></label>
   </div>`;
 }
+
+/* ---------------------------------------------------- background art layer -- */
+/* NY modern-art vocabulary, rendered in the site's monochrome:
+     FIELD   Reinhardt / Judd  — black-on-black rectangles, ΔL* ≤ 3
+     WEAVE   Agnes Martin      — a barely-there hand-drawn grid
+     ZIPS    Barnett Newman    — vertical bands of light that breathe
+     TRAVEL  Mondrian, "Broadway Boogie Woogie" — light moving along the
+             grid; here it doubles as data moving through the city.
+   Pure CSS: no canvas, no rAF, no JS. Fully disabled under reduced-motion. */
+export function bgArt() {
+  // x/y are percentages; d = delay, s = duration. Irregular on purpose —
+  // an even rhythm would read as a loading bar, not a painting.
+  const V = [
+    { x: 13, d: 0,    s: 23 },
+    { x: 37, d: 8.5,  s: 27 },
+    { x: 64, d: 15,   s: 21, gold: true },
+    { x: 88, d: 4,    s: 31 },
+  ];
+  const H = [
+    { y: 28, d: 11, s: 29 },
+    { y: 71, d: 2,  s: 25, gold: true },
+  ];
+
+  return `<div class="bg-art" aria-hidden="true">
+  <div class="bg-art__field"></div>
+  <div class="bg-art__weave"></div>
+  <div class="bg-art__zips"></div>
+  ${V.map((t) => `<i class="bw bw--v${t.gold ? ' bw--gold' : ''}" style="--x:${t.x}%;--d:${t.d}s;--s:${t.s}s"></i>`).join('\n  ')}
+  ${H.map((t) => `<i class="bw bw--h${t.gold ? ' bw--gold' : ''}" style="--y:${t.y}%;--d:${t.d}s;--s:${t.s}s"></i>`).join('\n  ')}
+</div>`;
+}

@@ -134,7 +134,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
    step-edges can appear between them. (Light sections opt in explicitly and
    fade in/out over a 180px band.) */
 .bg-canvas {
-  position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  position: fixed; inset: 0; z-index: -3; pointer-events: none;
   background:
     radial-gradient(120% 70% at 50% -10%,  #12181e 0%, rgba(18, 24, 30, 0) 58%),
     radial-gradient(80% 55% at 104% 26%,   #0d1319 0%, rgba(13, 19, 25, 0) 60%),
@@ -147,6 +147,129 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   opacity: .05; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
+}
+
+/* ------------------------------------------- 02b background art layer ------ */
+/* A single fixed painting behind the whole document, in the vocabulary of the
+   New York abstractionists — kept in the site's monochrome so it reads as
+   architecture, not decoration. Sections that carry their own ground (films,
+   .section--light) paint over it, so it only ever shows in the quiet passages.
+
+     .bg-art__field   Reinhardt / Judd — black-on-black rectangles (ΔL* ≤ 3)
+     .bg-art__weave   Agnes Martin     — an almost invisible drawn grid
+     .bg-art__zips    Barnett Newman   — vertical bands of light, breathing
+     .bw              Mondrian, "Broadway Boogie Woogie" — light travelling
+                      the grid. Long delays: it should feel occasional, never
+                      like something is permanently animating.
+
+   Everything here is transform/opacity only, and every animation stops under
+   prefers-reduced-motion (the composition itself stays). */
+.bg-art {
+  position: fixed; inset: 0; z-index: -2;
+  pointer-events: none; overflow: hidden;
+  contain: strict;
+}
+
+/* FIELD — hard-edged rectangles, contrast deliberately at the threshold of
+   perception. They give the black depth without ever reading as "boxes". */
+.bg-art__field {
+  position: absolute; inset: -6%;
+  background:
+    linear-gradient(90deg, transparent 0 7%,  #0c1116 7% 33%,  transparent 33%),
+    linear-gradient(90deg, transparent 0 61%, #04070a 61% 100%),
+    linear-gradient(0deg,  transparent 0 66%, #0a1015 66% 100%);
+  opacity: .55;
+  filter: blur(.5px);
+  animation: fieldDrift 140s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes fieldDrift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(-1.4%, 1.1%, 0) scale(1.035); }
+}
+
+/* WEAVE — Agnes Martin. Ruled, imperfect, nearly gone. Masked to an oval so
+   the tile never announces itself at the edges of the viewport. */
+.bg-art__weave {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(223, 231, 236, .050) 0 1px, transparent 1px 94px),
+    repeating-linear-gradient(0deg,  rgba(223, 231, 236, .034) 0 1px, transparent 1px 94px);
+  filter: blur(.35px);
+  -webkit-mask-image: radial-gradient(118% 78% at 50% 42%, #000 26%, transparent 76%);
+          mask-image: radial-gradient(118% 78% at 50% 42%, #000 26%, transparent 76%);
+  animation: weaveBreathe 46s ease-in-out infinite alternate;
+}
+@keyframes weaveBreathe {
+  from { opacity: .62; }
+  to   { opacity: 1; }
+}
+
+/* ZIPS — Newman. Four vertical incisions of light, one of them champagne.
+   They do not move; they only breathe, on different cycles. */
+.bg-art__zips { position: absolute; inset: 0; }
+.bg-art__zips::before,
+.bg-art__zips::after {
+  content: ""; position: absolute; top: -8%; bottom: -8%; width: 1px;
+}
+.bg-art__zips::before {
+  left: 22%;
+  background: linear-gradient(180deg, transparent, rgba(223, 231, 236, .17) 26%,
+              rgba(223, 231, 236, .17) 68%, transparent);
+  animation: zipBreathe 27s ease-in-out infinite alternate;
+}
+.bg-art__zips::after {
+  left: 78%;
+  background: linear-gradient(180deg, transparent, rgba(196, 168, 112, .19) 34%,
+              rgba(196, 168, 112, .19) 72%, transparent);
+  animation: zipBreathe 34s ease-in-out -12s infinite alternate;
+}
+@keyframes zipBreathe {
+  from { opacity: .3; }
+  to   { opacity: 1; }
+}
+
+/* BROADWAY BOOGIE WOOGIE — a light runs a grid line, then the wall is quiet
+   again for two thirds of the cycle. Rarity is the whole point. */
+.bw {
+  position: absolute; display: block;
+  --c: rgba(79, 227, 255, .85);
+  will-change: transform, opacity;
+}
+.bw--gold { --c: rgba(196, 168, 112, .8); }
+
+.bw--v {
+  left: var(--x); top: 0;
+  width: 1px; height: 20vh;
+  background: linear-gradient(180deg, transparent, var(--c) 62%, transparent);
+  animation: bwDown var(--s, 24s) var(--d, 0s) linear infinite;
+}
+.bw--h {
+  top: var(--y); left: 0;
+  height: 1px; width: 18vw;
+  background: linear-gradient(90deg, transparent, var(--c) 62%, transparent);
+  animation: bwRight var(--s, 24s) var(--d, 0s) linear infinite;
+}
+
+@keyframes bwDown {
+  0%   { transform: translate3d(0, -22vh, 0); opacity: 0; }
+  5%   { opacity: .9; }
+  33%  { opacity: .9; }
+  40%  { transform: translate3d(0, 104vh, 0); opacity: 0; }
+  100% { transform: translate3d(0, 104vh, 0); opacity: 0; }
+}
+@keyframes bwRight {
+  0%   { transform: translate3d(-20vw, 0, 0); opacity: 0; }
+  5%   { opacity: .75; }
+  33%  { opacity: .75; }
+  40%  { transform: translate3d(104vw, 0, 0); opacity: 0; }
+  100% { transform: translate3d(104vw, 0, 0); opacity: 0; }
+}
+
+/* Small screens: keep the painting, halve the moving parts. */
+@media (max-width: 767px) {
+  .bg-art__weave { background-size: 68px 68px, 68px 68px; }
+  .bw--v:nth-of-type(2), .bw--v:nth-of-type(4), .bw--h:nth-of-type(6) { display: none; }
 }
 
 section { position: relative; background: transparent; }
@@ -546,10 +669,14 @@ section { position: relative; background: transparent; }
   padding-block: var(--band);
 }
 .statement--tall { min-height: 96svh; }
-.statement__body { max-width: 30ch; }
-.statement--center { justify-content: center; text-align: center; }
-.statement--center .statement__body { max-width: 34ch; }
-.statement--end { justify-content: flex-end; }
+/* NB: not `ch` — this box holds display-size mincho, but `ch` would be
+   measured against the inherited 18px sans and crush it to ~4 characters. */
+.statement__body { max-width: min(100%, 62rem); }
+.statement--center { text-align: center; }
+.statement--center .statement__body { max-width: min(100%, 54rem); margin-inline: auto; }
+/* The section's only flex child is the full-width .shell, so alignment has to
+   happen on the body itself. */
+.statement--end .statement__body { margin-left: auto; }
 
 .split {
   display: grid; gap: clamp(2.4rem, 6vw, 5.5rem);
@@ -639,14 +766,14 @@ section { position: relative; background: transparent; }
 @media (min-width: 700px)  { .tiles--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .tiles--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .tile {
-  background: var(--bg); min-width: 0;
+  background: rgba(6, 9, 12, .66); min-width: 0;
   padding: clamp(1.6rem, 3.4vw, 2.8rem);
   display: flex; flex-direction: column; gap: .9rem;
   position: relative;
   transition: background-color 620ms var(--ease);
 }
 .section--light .tile { background: var(--paper); }
-.tile:hover { background: rgba(23, 28, 33, .55); }
+.tile:hover { background: rgba(23, 28, 33, .72); }
 .section--light .tile:hover { background: var(--paper-2); }
 .tile h3 {
   font-family: var(--f-display); font-size: var(--t-lg);
@@ -847,7 +974,7 @@ section { position: relative; background: transparent; }
 @media (min-width: 860px) { .cta-split { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .cta-split > a { min-width: 0; }
 .cta-split > a {
-  background: var(--bg);
+  background: rgba(6, 9, 12, .66);
   padding: clamp(2.4rem, 6vw, 4.5rem) clamp(1.6rem, 4vw, 3.2rem);
   display: flex; flex-direction: column; gap: 1rem;
   transition: background-color 620ms var(--ease);
@@ -930,11 +1057,14 @@ section { position: relative; background: transparent; }
   .plan .plan-new { stroke-dashoffset: 0 !important; }
   .plan .plan-fill, .plan .plan-node { opacity: 1 !important; }
   .marquee__track { animation: none !important; }
+  .bg-art__field, .bg-art__weave,
+  .bg-art__zips::before, .bg-art__zips::after { animation: none !important; }
+  .bw { display: none !important; }
   .scroll-cue i::after { animation: none !important; }
   .hero__media video, .film__media video { display: none !important; }
 }
 
 @media print {
-  .site-header, .drawer, .bg-grain, .scroll-cue, video { display: none !important; }
+  .site-header, .drawer, .bg-grain, .bg-art, .scroll-cue, video { display: none !important; }
   body { background: #fff; color: #000; }
 }

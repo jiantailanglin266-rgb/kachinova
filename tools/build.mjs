@@ -10,7 +10,7 @@ import { pathToFileURL } from 'node:url';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-import { head, header, footer } from '../src/components.mjs';
+import { head, header, footer, bgArt } from '../src/components.mjs';
 import { SITE } from '../src/site.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -48,6 +48,7 @@ ${head(page)}
 </head>
 <body${page.bodyClass ? ` class="${page.bodyClass}"` : ''}>
 <div class="bg-canvas" aria-hidden="true"></div>
+${bgArt()}
 <div class="bg-grain" aria-hidden="true"></div>
 ${header(page.nav || page.path)}
 <main id="main">
