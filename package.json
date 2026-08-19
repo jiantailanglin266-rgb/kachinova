@@ -1,0 +1,18 @@
+{
+  "name": "kachinova",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KACHINOVA — REAL ESTATE TECHNOLOGY. Static corporate site.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "media": "python tools/media.py",
+    "videos": "bash tools/videos.sh",
+    "serve": "npx -y serve -l 4477 .",
+    "shot": "node tools/shot.mjs",
+    "check": "node tools/overflow.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.0.0"
+  }
+}
