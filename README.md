@@ -95,7 +95,45 @@ bash tools/videos.sh city ai  # 指定したカットだけ再生成
 `<video>` は常に `<img>` ポスターの上に重なり、**実際に 1 フレームデコードできたときだけ**
 フェードインします。動画ファイルが 1 本も存在しなくてもサイトは完成品として成立します。
 
-## 5. デプロイ
+## 5. 公開URL（現在）
+
+**https://jiantailanglin266-rgb.github.io/kachinova/**
+
+GitHub Pages のプロジェクトサイトとして公開中。現在は **noindex**（検索エンジンに載りません）。
+関係者への確認用URLとして機能します。
+
+### ⚠️ ビルドは2種類あります
+
+サブディレクトリ配信のため、パスの前に `/kachinova` を付けたビルドが必要です。
+
+```bash
+npm run build                 # ルート配信用（ローカル確認・独自ドメイン用）
+bash tools/deploy-pages.sh    # GitHub Pages 用（/kachinova を前置＋noindex）
+```
+
+**`npm run build` だけを実行して push すると、公開サイトの CSS・画像・動画が 404 になります。**
+GitHub Pages を更新するときは必ず：
+
+```bash
+bash tools/deploy-pages.sh
+git add -A && git commit -m "..." && git push
+```
+
+環境変数で切り替えられます（`tools/deploy-pages.sh` が設定）。
+
+| 変数 | 意味 |
+|---|---|
+| `BASE_PATH` | サブディレクトリ名。`kachinova` → 全パスに `/kachinova` を前置 |
+| `SITE_ORIGIN` | canonical / OG / sitemap / JSON-LD のオリジン |
+| `NOINDEX` | `1` で全ページ `noindex,nofollow` ＋ robots.txt を `Disallow: /` |
+
+### 独自ドメインに移すとき
+
+1. リポジトリに `CNAME` ファイル（中身はドメイン名）を追加
+2. `SITE_ORIGIN=https://例.co.jp NOINDEX=0 node tools/build.mjs`（`BASE_PATH` は付けない）
+3. 公開情報（DATA_REQUIRED）が揃っていることを確認してから push
+
+## 6. デプロイ（一般）
 
 `.nojekyll` を含むリポジトリのルートをそのまま配信してください。
 
@@ -110,7 +148,7 @@ bash tools/videos.sh city ai  # 指定したカットだけ再生成
 3. フォームの送信先エンドポイントを設定（`action="#"` のまま公開しない）
 4. `assets/videos/` を配信する CDN があれば、`data-video` のパスを差し替え
 
-## 6. 品質チェック（開発用）
+## 7. 品質チェック（開発用）
 
 ```bash
 node tools/overflow.mjs index.html 390     # 横スクロールの検出
@@ -120,7 +158,7 @@ node tools/shot.mjs index.html 1440 --slices=12   # 分割スクリーンショ�
 確認済み: 360 / 390 / 430 / 768 / 1024 / 1440 / 1920px で横スクロールなし。
 写真の上以外のテキストは全ページ WCAG 2.1 AA（4.5:1）を満たしています。
 
-## 7. コンテンツの原則
+## 8. コンテンツの原則
 
 **事実として確認できない情報は書かない。** 未確定の項目はページ上で
 `確認中 ／ DATA_REQUIRED` と明示され、推定値では埋めていません。
