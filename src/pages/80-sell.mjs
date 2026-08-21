@@ -67,7 +67,7 @@ ${pageHero({
           data-mailto="${COMPANY.email || ''}" data-subject="KACHINOVA｜無料査定のご相談" novalidate>
       ${honeypot()}
 
-      <p class="eyebrow eyebrow--plain" style="color:var(--ink)">01 ／ お客様について</p>
+      <p class="eyebrow eyebrow--plain" style="color:var(--fg)">01 ／ お客様について</p>
       <div class="form__grid form__grid--2">
         ${field({ name: 'name', label: 'お名前', required: true, placeholder: '価値野 太郎', autocomplete: 'name' })}
         ${field({ name: 'email', label: 'メールアドレス', type: 'email', required: true, placeholder: 'you@example.com', autocomplete: 'email' })}
@@ -77,7 +77,7 @@ ${pageHero({
 
       <hr class="rule u-mt-s">
 
-      <p class="eyebrow eyebrow--plain" style="color:var(--ink)">02 ／ 物件について</p>
+      <p class="eyebrow eyebrow--plain" style="color:var(--fg)">02 ／ 物件について</p>
       <div class="form__grid form__grid--2">
         ${field({ name: 'property_address', label: '物件所在地', required: true, placeholder: '東京都〇〇区〇〇 1-2-3', hint: '番地までわからない場合は市区町村までで結構です。' })}
         ${field({ name: 'building_name', label: 'マンション名', placeholder: '〇〇マンション' })}

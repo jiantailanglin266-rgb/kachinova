@@ -31,7 +31,7 @@ page.on('console', (m) => { if (m.type() === 'error') console.log('  [console]',
 page.on('pageerror', (e) => console.log('  [pageerror]', e.message));
 page.on('requestfailed', (r) => console.log('  [404?]', r.url().replace('http://localhost:4477', ''), r.failure()?.errorText));
 
-await page.goto('http://localhost:4477' + target, { waitUntil: 'networkidle2', timeout: 60000 });
+await page.goto((process.env.BASE_URL||'http://localhost:4477') + target, { waitUntil: 'networkidle2', timeout: 60000 });
 await page.evaluate(() => document.fonts.ready);
 // force every reveal open so static shots show the finished state
 await page.evaluate(() => {

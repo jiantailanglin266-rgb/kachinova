@@ -4,6 +4,11 @@
 
 import { SITE, NAV, NAV_MORE, FILMS } from './site.mjs';
 
+/* The logo ships as two artworks: the original (dark ink + gold, for paper)
+   and a knockout (off-white + gold, for ink). Pick by theme. */
+export const THEME = (process.env.THEME || 'light').toLowerCase();
+const LOGO = THEME === 'dark' ? '-dark' : '';
+
 export const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -21,7 +26,7 @@ export function head(page) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(page.description)}">
 <link rel="canonical" href="${url}">
-<meta name="theme-color" content="#05070a">
+<meta name="theme-color" content="${THEME === 'dark' ? '#05070a' : '#f4f3f0'}">
 <meta name="format-detection" content="telephone=no">
 <meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'}">
 
@@ -61,8 +66,8 @@ export function header(current) {
 <header class="site-header">
   <div class="header-in">
     <a class="brand" href="/" aria-label="KACHINOVA ホームへ">
-      <img class="brand__mark" src="/assets/img/logo-mark-dark.webp" alt="" width="415" height="200" fetchpriority="high">
-      <img class="brand__word" src="/assets/img/logo-word-dark.webp" alt="KACHINOVA" width="1211" height="96" fetchpriority="high">
+      <img class="brand__mark" src="/assets/img/logo-mark${LOGO}.webp" alt="" width="415" height="200" fetchpriority="high">
+      <img class="brand__word" src="/assets/img/logo-word${LOGO}.webp" alt="KACHINOVA" width="1211" height="96" fetchpriority="high">
       <span class="brand__tag">${SITE.tagline}</span>
     </a>
     <nav class="nav" aria-label="メインナビゲーション">
@@ -97,8 +102,8 @@ export function footer() {
     <div class="footer-grid">
       <div class="footer-col footer__brand">
         <span class="brand">
-          <img class="brand__mark" src="/assets/img/logo-mark-dark.webp" alt="" width="415" height="200" loading="lazy">
-          <img class="brand__word" src="/assets/img/logo-word-dark.webp" alt="KACHINOVA" width="1211" height="96" loading="lazy">
+          <img class="brand__mark" src="/assets/img/logo-mark${LOGO}.webp" alt="" width="415" height="200" loading="lazy">
+          <img class="brand__word" src="/assets/img/logo-word${LOGO}.webp" alt="KACHINOVA" width="1211" height="96" loading="lazy">
         </span>
         <p>${SITE.claimJa}<br>${SITE.sub}</p>
       </div>

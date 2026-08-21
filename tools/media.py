@@ -17,6 +17,10 @@ import sys
 import numpy as np
 from PIL import Image, ImageFilter
 
+# Two grades, one pipeline. THEME=dark|light selects which; everything
+# downstream is derived from whichever is active.
+THEME = os.environ.get("THEME", "light").lower()
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "images")
 OUT_IMG = os.path.join(ROOT, "assets", "img")
@@ -58,48 +62,78 @@ SHOTS = {
 # lab-globe is the last stock still: it carries a page hero, so it is pulled
 # down to a target level rather than left at the source's own brightness.
 STILLS = {
-    "lab-globe":   ("net_city",   (0, 120, 1400, 120 + 788), 0.30),
+    "lab-globe":   ("net_city",   (0, 120, 1400, 120 + 788), 0.72 if THEME == "light" else 0.30),
 }
 
 # ---------------------------------------------------------------- grade ----
+# Two grades, one pipeline. THEME=dark|light selects which. Everything
+# downstream (posters, editorial stills, the 3D LUT that films.py feeds to
+# ffmpeg) is derived from whichever is active, so motion and stills can never
+# drift apart — and switching the whole site is one environment variable.
+# DARK — cinema at night. Crushed blacks, ice highlights, cool upper mids.
+RAMP_DARK = np.array([
+    [0.000,   4,   6,   9],
+    [0.150,  16,  20,  24],
+    [0.320,  38,  45,  51],
+    [0.560, 104, 115, 123],
+    [0.800, 178, 189, 196],
+    [1.000, 240, 245, 248],
+], dtype=np.float64)
 
-# Tritone ramp: shadow -> deep graphite -> silver -> ice highlight.
-RAMP = np.array(
-    [
-        [0.000, 4, 6, 9],
-        [0.150, 16, 20, 24],
-        [0.320, 38, 45, 51],
-        [0.560, 104, 115, 123],
-        [0.800, 178, 189, 196],
-        [1.000, 240, 245, 248],
-    ],
-    dtype=np.float64,
-)
+# LIGHT — the daylight gallery. Blacks lifted off zero (nothing in a high-key
+# image should hit true black), a long silver mid, and a warm paper white so
+# the plate sits on the same off-white as the page instead of glaring.
+RAMP_LIGHT = np.array([
+    [0.000,  26,  29,  33],
+    [0.140,  74,  79,  85],
+    [0.330, 132, 137, 142],
+    [0.540, 178, 181, 183],
+    [0.760, 214, 214, 212],
+    [1.000, 250, 249, 245],
+], dtype=np.float64)
+
+# High-key needs a gentler curve: the same contrast that reads as "cinematic"
+# on a dark plate reads as "harsh" on a bright one.
+_CFG = {
+    "dark":  {"ramp": RAMP_DARK,  "scurve": 0.34, "sat": 0.13, "grain": 0.0055},
+    "light": {"ramp": RAMP_LIGHT, "scurve": 0.16, "sat": 0.10, "grain": 0.0042},
+}[THEME]
 
 
-def _ramp_lut() -> np.ndarray:
+def _ramp_lut(ramp: np.ndarray, theme: str) -> np.ndarray:
     xs = np.linspace(0.0, 1.0, 256)
     lut = np.zeros((256, 3), dtype=np.float64)
     for c in range(3):
-        lut[:, c] = np.interp(xs, RAMP[:, 0], RAMP[:, 1 + c])
-    # cool bias in the upper mids only (electric-ice memory colour, very slight)
+        lut[:, c] = np.interp(xs, ramp[:, 0], ramp[:, 1 + c])
     bias = np.clip(np.sin(np.pi * np.clip((xs - 0.35) / 0.55, 0, 1)), 0, 1)
-    lut[:, 2] = np.clip(lut[:, 2] + bias * 7.0, 0, 255)
-    lut[:, 0] = np.clip(lut[:, 0] - bias * 3.0, 0, 255)
+    if theme == "dark":
+        # cool bias in the upper mids (electric-ice memory colour)
+        lut[:, 2] = np.clip(lut[:, 2] + bias * 7.0, 0, 255)
+        lut[:, 0] = np.clip(lut[:, 0] - bias * 3.0, 0, 255)
+    else:
+        # cool shadows, warm highlights — the architectural-photography look.
+        # Without it a high-key monochrome goes flat and grey.
+        shadow = np.clip(1.0 - xs / 0.45, 0, 1)
+        high = np.clip((xs - 0.55) / 0.45, 0, 1)
+        lut[:, 2] = np.clip(lut[:, 2] + shadow * 6.0 - high * 4.0, 0, 255)
+        lut[:, 0] = np.clip(lut[:, 0] - shadow * 3.0 + high * 3.0, 0, 255)
     return lut
 
 
-LUT = _ramp_lut()
+LUT = _ramp_lut(_CFG["ramp"], THEME)
+SCURVE_AMOUNT = _CFG["scurve"]
+RESIDUAL_SAT = _CFG["sat"]
 
 
-def _scurve(x: np.ndarray, amount: float = 0.34) -> np.ndarray:
+def _scurve(x: np.ndarray, amount: float | None = None) -> np.ndarray:
     """Gentle filmic S-curve on 0..1 luminance."""
-    return np.clip(x + amount * np.sin(2.0 * np.pi * x) * -1.0 * 0.5 + amount * (x - 0.5) * 0.0, 0, 1) \
-        if False else np.clip(x * x * (3 - 2 * x) * amount + x * (1 - amount), 0, 1)
+    a = SCURVE_AMOUNT if amount is None else amount
+    return np.clip(x * x * (3 - 2 * x) * a + x * (1 - a), 0, 1)
 
 
-def grade(im: Image.Image, residual_sat: float = 0.13, lift: float = 0.0) -> Image.Image:
-    """Apply the single KACHINOVA film grade. Returns RGB."""
+def grade(im: Image.Image, residual_sat: float | None = None, lift: float = 0.0) -> Image.Image:
+    """Apply the active KACHINOVA film grade. Returns RGB."""
+    sat = RESIDUAL_SAT if residual_sat is None else residual_sat
     a = np.asarray(im.convert("RGB"), dtype=np.float64) / 255.0
     lum = a[..., 0] * 0.2126 + a[..., 1] * 0.7152 + a[..., 2] * 0.0722
     lum = _scurve(lum)
@@ -110,17 +144,19 @@ def grade(im: Image.Image, residual_sat: float = 0.13, lift: float = 0.0) -> Ima
 
     # keep a whisper of the original chroma so it is not a dead duotone
     chroma = a - lum[..., None]
-    out = np.clip(toned + chroma * residual_sat, 0, 1)
+    out = np.clip(toned + chroma * sat, 0, 1)
 
-    # fine grain: kills banding in the long sky gradients
+    # fine grain: kills banding in the long gradients
     rng = np.random.default_rng(7)
-    grain = rng.normal(0.0, 0.0055, size=out.shape[:2])[..., None]
+    grain = rng.normal(0.0, _CFG["grain"], size=out.shape[:2])[..., None]
     out = np.clip(out + grain, 0, 1)
 
     return Image.fromarray((out * 255.0).round().astype(np.uint8), "RGB")
 
 
 def vignette(im: Image.Image, strength: float = 0.30) -> Image.Image:
+    if THEME == "light":
+        strength *= 0.45      # a heavy vignette reads as a mistake on white
     w, h = im.size
     yy, xx = np.mgrid[0:h, 0:w]
     nx = (xx / (w - 1) - 0.5) * 2.0
@@ -178,7 +214,7 @@ def _to_level(im: Image.Image, target: float) -> Image.Image:
     w = np.array([0.2126, 0.7152, 0.0722])
     a = np.asarray(im, dtype=np.float64) / 255.0
     cur = float((a @ w).mean())
-    if cur <= target or cur <= 1e-6:
+    if cur <= 1e-6 or abs(cur - target) < 0.01:
         return im
     a = np.clip(a * (target / cur), 0.0, 1.0)
     return Image.fromarray((a * 255.0).round().astype(np.uint8), "RGB")

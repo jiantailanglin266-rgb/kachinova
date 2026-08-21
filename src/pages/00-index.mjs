@@ -1,5 +1,6 @@
 import { SITE, FILMS } from '../site.mjs';
-import { film, statement, plan, marquee, ctaSplit } from '../components.mjs';
+import { film, statement, plan, marquee, ctaSplit, THEME } from '../components.mjs';
+const LOGO_MARK = `/assets/img/logo-mark${THEME === 'dark' ? '-dark' : ''}.webp`;
 
 /* ---------------------------------------------------------------- 01 hero -- */
 const hero = `<section class="hero" aria-labelledby="hero-t">
@@ -13,7 +14,7 @@ const hero = `<section class="hero" aria-labelledby="hero-t">
   </div>
   <div class="hero__scrim"></div>
   <div class="shell hero__inner">
-    <img class="hero__mark" src="/assets/img/logo-mark-dark.webp" alt="" width="415" height="200" fetchpriority="high">
+    <img class="hero__mark" src="${LOGO_MARK}" alt="" width="415" height="200" fetchpriority="high">
     <p class="eyebrow">${SITE.name} ／ ${SITE.tagline}</p>
     <h1 class="display hero__title line-mask-group" id="hero-t">
       <span class="line-mask"><span>Reinvent</span></span>
@@ -21,7 +22,7 @@ const hero = `<section class="hero" aria-labelledby="hero-t">
       <span class="line-mask"><span>of Living.</span></span>
     </h1>
     <p class="jp-display jp-display--sm hero__jp reveal">住まいの価値を、再発明する。</p>
-    <p class="u-mono u-mt-s" style="color:var(--silver)">${SITE.sub}</p>
+    <p class="u-mono u-mt-s" style="color:var(--fg)">${SITE.sub}</p>
     <p class="scroll-cue"><i></i>SCROLL</p>
   </div>
 </section>`;
@@ -395,7 +396,7 @@ const finale = `<section class="film film--tall film--center" id="finale" aria-l
       <p class="jp-display u-mt" style="font-size:var(--t-xl)">住まいは、<br>もっと進化できる。</p>
       <h2 class="display display--mega u-mt" id="fin-t">Real Estate<br>Re-engineered.</h2>
       <p class="u-mono u-mt" style="color:var(--mist)">${SITE.name}</p>
-      <p class="u-mono u-mt-s" style="color:var(--steel)">${SITE.sub}</p>
+      <p class="u-mono u-mt-s" style="color:var(--fg-mute)">${SITE.sub}</p>
       <div class="btn-row u-mt-l" style="justify-content:center">
         <a class="btn btn--lg" href="/projects.html">PROJECTS<i></i></a>
         <a class="btn btn--lg btn--cyan" href="/sell.html">SELL TO KACHINOVA<i></i></a>

@@ -29,6 +29,7 @@ function normBase(v) {
 }
 const BASE = normBase(process.env.BASE_PATH);
 const NOINDEX = process.env.NOINDEX === '1';
+const THEME = (process.env.THEME || 'light').toLowerCase();
 if (process.env.SITE_ORIGIN) SITE.origin = process.env.SITE_ORIGIN.replace(/\/+$/, '');
 
 /* Rewrites every root-absolute internal URL onto BASE. Leaves protocol-relative
@@ -42,7 +43,7 @@ function withBase(html) {
 }
 
 const document_ = (page) => `<!doctype html>
-<html lang="ja" prefix="og: https://ogp.me/ns#">
+<html lang="ja"${THEME === 'dark' ? ' data-theme="dark"' : ''} prefix="og: https://ogp.me/ns#">
 <head>
 ${head(page)}
 </head>

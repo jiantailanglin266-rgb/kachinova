@@ -27,11 +27,13 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from media import LUT, _scurve, export, OUT_IMG, OUT_POSTER, OUT_MASTER, vignette  # noqa: E402
+from media import (LUT, _scurve, export, OUT_IMG, OUT_POSTER, OUT_MASTER,  # noqa: E402
+                   vignette, THEME, RESIDUAL_SAT)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = r"C:\Users\kenta\Downloads"
-CUBE = os.path.join(ROOT, "tools", "kachinova.cube")
+CUBE = os.path.join(ROOT, "tools", f"kachinova-{THEME}.cube")
+CUBE_REL = f"tools/kachinova-{THEME}.cube"
 OUT_VID = os.path.join(ROOT, "assets", "videos")
 WORK = os.path.join(ROOT, ".media-masters")
 
@@ -91,7 +93,7 @@ def write_cube(size: int = 33) -> None:
         f.write("DOMAIN_MIN 0.0 0.0 0.0\nDOMAIN_MAX 1.0 1.0 1.0\n")
         for v in out:
             f.write(f"{v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
-    print(f"  LUT written: {os.path.relpath(CUBE, ROOT)} ({size}^3)")
+    print(f"  LUT written: {os.path.relpath(CUBE, ROOT)} ({size}^3)  theme={THEME}")
 
 
 # Post-grade mean luminance each film should land on. This is the light arc of
@@ -100,15 +102,21 @@ def write_cube(size: int = 33) -> None:
 # the intent while removing the accidental 3.3x exposure spread between the
 # delivered files.
 TARGET_L = {
-    "city":    0.24,   # blue hour, carries the title
-    "ai":      0.22,   # dark interior, data lines
-    "revalue": 0.38,   # ends on the finished, brighter room
-    "smart":   0.30,   # dusk
-    "eco":     0.46,   # morning — the brightest beat
-    "future":  0.18,   # night close
-}
+    # DARK — the light arc of the scroll at night.
+    "dark": {
+        "city": 0.24, "ai": 0.22, "revalue": 0.38,
+        "smart": 0.30, "eco": 0.46, "future": 0.18,
+    },
+    # LIGHT — the same arc, played high-key. Kept as a spread rather than one
+    # flat value: without it the six clips become interchangeable white boxes
+    # and the scroll loses its sense of time passing.
+    "light": {
+        "city": 0.58, "ai": 0.60, "revalue": 0.70,
+        "smart": 0.62, "eco": 0.78, "future": 0.50,
+    },
+}[THEME]
 
-_VIGNETTE_MEAN = 0.93   # rough mean attenuation of vignette=PI/5
+_VIGNETTE_MEAN = 0.97 if THEME == "light" else 0.93   # vignette is lighter on white
 
 
 def _grade_np(rgb: np.ndarray) -> np.ndarray:
@@ -117,7 +125,7 @@ def _grade_np(rgb: np.ndarray) -> np.ndarray:
     lum = _scurve(lum)
     idx = np.clip((lum * 255.0).round().astype(np.int32), 0, 255)
     toned = LUT[idx] / 255.0
-    return np.clip(toned + (rgb - lum[:, None]) * 0.13, 0.0, 1.0)
+    return np.clip(toned + (rgb - lum[:, None]) * RESIDUAL_SAT, 0.0, 1.0)
 
 
 def probe_frames(shot: str, n: int = 6) -> np.ndarray:
@@ -168,10 +176,11 @@ def grade_chain(gamma: float) -> str:
         f"scale={OUT_W}:{OUT_H}:flags=lanczos,"
         "format=rgb24,"
         f"eq=gamma={gamma}:eval=init,"
-        "lut3d=file=tools/kachinova.cube:interp=tetrahedral,"
+        f"lut3d=file={CUBE_REL}:interp=tetrahedral,"
         "unsharp=5:5:0.34:5:5:0,"
-        "vignette=PI/5,"
-        "noise=alls=5:allf=t,"
+        + ("vignette=PI/9," if THEME == "light" else "vignette=PI/5,")
+        + ("noise=alls=3:allf=t," if THEME == "light" else "noise=alls=5:allf=t,")
+        +
         "format=yuv420p,"
         f"fps={FPS},setpts=PTS-STARTPTS"
     )
@@ -257,7 +266,7 @@ def posters(shot: str) -> None:
 if __name__ == "__main__":
     want = [a for a in sys.argv[1:] if not a.startswith("-")]
     shots = want or list(FILMS)
-    print("KACHINOVA film pass")
+    print(f"KACHINOVA film pass  theme={THEME}")
     write_cube()
     for s in shots:
         if s not in FILMS:

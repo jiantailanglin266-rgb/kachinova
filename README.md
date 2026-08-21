@@ -71,6 +71,23 @@ npm run media     # 静止画：グレード＋ロゴ抽出＋OG生成
 npm run films     # 動画：納品6本のグレード・ループ化・ポスター書き出し
 ```
 
+### テーマ（LIGHT / DARK）
+
+白基調と黒基調を、同じソースから切り替えられます。**動画はテーマごとに
+グレードを焼き込んである**ため、切り替えは2段階です。
+
+```bash
+# 白基調（現在の既定）
+THEME=light python tools/films.py && THEME=light bash tools/deploy-pages.sh
+
+# 黒基調に戻す
+THEME=dark  python tools/films.py && THEME=dark  bash tools/deploy-pages.sh
+```
+
+`tools/media.py` の `grade()` がテーマごとの階調ランプを持ち、`tools/films.py` が
+それを `tools/kachinova-<theme>.cube` に書き出して ffmpeg に渡します。
+**静止画と動画が食い違うことは構造上起こりません。**
+
 ### 動画（tools/films.py）
 
 納品された6本（864×496 / 24fps / 15秒 / 音声あり）を、そのままでは使いません。
