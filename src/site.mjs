@@ -55,10 +55,10 @@ export const NAV_MORE = [
 /* The six films. `shot` maps to assets/videos/kachinova-<shot>.{webm,mp4}
    and assets/img/video-posters/kachinova-<shot>*.{webp,jpg}. */
 export const FILMS = {
-  city:    { n: '01', label: 'THE CITY',        alt: '夜明け前の東京。高層マンションと都市の光。' },
-  ai:      { n: '02', label: 'AI × REAL ESTATE', alt: '都市とデータネットワークが重なる俯瞰映像。' },
-  revalue: { n: '03', label: 'RE:VALUE',        alt: '水辺に建つ既存の分譲マンション群。' },
-  smart:   { n: '04', label: 'SMART LIVING',    alt: '夕暮れの高層住宅。ガラス越しに灯る住戸の明かり。' },
-  eco:     { n: '05', label: 'ECO HOUSE',       alt: '緑化されたテラスをもつ集合住宅と朝の街。' },
-  future:  { n: '06', label: 'KACHINOVA FUTURE', alt: '夜の東京。窓に明かりの灯る集合住宅と街路。' },
+  city:    { n: '01', label: 'THE CITY',        alt: '夕暮れの東京。ガラス張りの高層建築の間から、眼下に街の灯りが広がる。' },
+  ai:      { n: '02', label: 'AI × REAL ESTATE', alt: '静かな和の室内。床と壁に沿って細い解析線が走る。' },
+  revalue: { n: '03', label: 'RE:VALUE',        alt: '内装のない既存住戸が、木質で仕上げられた空間へと移り変わる。' },
+  smart:   { n: '04', label: 'SMART LIVING',    alt: '夕暮れの住戸。間接照明が灯り、窓の外に街の光が見える。' },
+  eco:     { n: '05', label: 'ECO HOUSE',       alt: '朝の光が差し込む木の床の室内と、窓の外の東京の街並み。' },
+  future:  { n: '06', label: 'KACHINOVA FUTURE', alt: '夜。灯りのともる住戸から見下ろす、東京の夜景。' },
 };

@@ -49,12 +49,16 @@ SHOTS = {
 }
 
 # Editorial stills used as section / page backgrounds (not video posters).
+# about-city / sell-city / why-reuse are now lifted from the delivered films
+# by tools/films.py — do not regenerate them here or the film pass gets undone.
+# These two carry a page hero: white display type sits directly on them, so
+# they are exposed to a target rather than left at the source's own brightness.
+# (The delivered films are handled the same way in tools/films.py.)
+# tech-mind now comes from the delivered AI film (see tools/films.py).
+# lab-globe is the last stock still: it carries a page hero, so it is pulled
+# down to a target level rather than left at the source's own brightness.
 STILLS = {
-    "about-city":  ("day_green",  (0, 560, 941, 560 + 529)),
-    "tech-mind":   ("ai_face",    (0, 0, 700, 1024)),
-    "lab-globe":   ("net_city",   (0, 60, 900, 60 + 900)),
-    "sell-city":   ("night_tower",(0, 900, 941, 900 + 529)),
-    "why-reuse":   ("waterfront", (0, 180, 941, 180 + 700)),
+    "lab-globe":   ("net_city",   (0, 120, 1400, 120 + 788), 0.30),
 }
 
 # ---------------------------------------------------------------- grade ----
@@ -149,6 +153,8 @@ def export(im: Image.Image, base: str, widths=(1920, 1280, 720)) -> None:
 # ----------------------------------------------------------------- run -----
 
 def build_shots() -> None:
+    """Only used to bootstrap posters before real footage existed.
+    tools/films.py now overwrites every poster from the delivered clips."""
     for name, (key, box) in SHOTS.items():
         p = os.path.join(SRC, S[key])
         im = Image.open(p).convert("RGB")
@@ -162,15 +168,32 @@ def build_shots() -> None:
         print(f"  shot  {name:9s} <- {key}")
 
 
+def _to_level(im: Image.Image, target: float) -> Image.Image:
+    """Scale a graded image to a target mean luminance.
+
+    Applied after grading, not before: these sources are near-white, and no
+    pre-gamma can pull them through the tritone ramp far enough (the ramp lifts
+    mid-tones by design). A post-grade scale hits the number exactly and keeps
+    the tonal relationships intact — which is all a backdrop needs."""
+    w = np.array([0.2126, 0.7152, 0.0722])
+    a = np.asarray(im, dtype=np.float64) / 255.0
+    cur = float((a @ w).mean())
+    if cur <= target or cur <= 1e-6:
+        return im
+    a = np.clip(a * (target / cur), 0.0, 1.0)
+    return Image.fromarray((a * 255.0).round().astype(np.uint8), "RGB")
+
+
 def build_stills() -> None:
-    for name, (key, box) in STILLS.items():
+    for name, (key, box, target) in STILLS.items():
         p = os.path.join(SRC, S[key])
         im = Image.open(p).convert("RGB")
         if box:
             im = im.crop(box)
-        w = 1600
-        im = im.resize((w, round(im.size[1] * w / im.size[0])), Image.LANCZOS)
-        im = vignette(grade(im), 0.28)
+        # page heroes declare 1600x900, so guarantee it rather than trusting
+        # the crop box to be exactly 16:9
+        im = fit16x9(im, 1600)
+        im = _to_level(vignette(grade(im), 0.28), target)
         im.save(os.path.join(OUT_IMG, f"{name}.webp"), "WEBP", quality=74, method=6)
         im.save(os.path.join(OUT_IMG, f"{name}.jpg"), "JPEG", quality=76, optimize=True, progressive=True)
         print(f"  still {name:11s} <- {key}")

@@ -7,10 +7,10 @@
   "scripts": {
     "build": "node tools/build.mjs",
     "media": "python tools/media.py",
-    "videos": "bash tools/videos.sh",
     "serve": "npx -y serve -l 4477 .",
     "shot": "node tools/shot.mjs",
-    "check": "node tools/overflow.mjs"
+    "check": "node tools/overflow.mjs",
+    "films": "python tools/films.py"
   },
   "devDependencies": {
     "puppeteer-core": "^23.0.0"

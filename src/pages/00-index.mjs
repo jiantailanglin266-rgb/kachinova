@@ -1,4 +1,4 @@
-import { SITE } from '../site.mjs';
+import { SITE, FILMS } from '../site.mjs';
 import { film, statement, plan, marquee, ctaSplit } from '../components.mjs';
 
 /* ---------------------------------------------------------------- 01 hero -- */
@@ -6,7 +6,7 @@ const hero = `<section class="hero" aria-labelledby="hero-t">
   <div class="hero__media">
     <picture>
       <source type="image/webp" srcset="/assets/img/video-posters/kachinova-city-720.webp 720w, /assets/img/video-posters/kachinova-city-1280.webp 1280w, /assets/img/video-posters/kachinova-city.webp 1920w" sizes="100vw">
-      <img src="/assets/img/video-posters/kachinova-city-1280.jpg" alt="夜明け前の東京。高層マンションと都市の光。" width="1920" height="1080" fetchpriority="high">
+      <img src="/assets/img/video-posters/kachinova-city-1280.jpg" alt="${FILMS.city.alt}" width="1920" height="1080" fetchpriority="high">
     </picture>
     <video muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"
            data-video="/assets/videos/kachinova-city" data-priority="high"></video>
@@ -315,7 +315,7 @@ const whyReuse = `<section class="band section--light" id="why-reuse" aria-label
         <figure class="figure figure--mask">
           <picture>
             <source type="image/webp" srcset="/assets/img/why-reuse.webp">
-            <img src="/assets/img/why-reuse.jpg" alt="水辺に建ち並ぶ既存の分譲マンション。" width="1600" height="1190" loading="lazy" decoding="async">
+            <img src="/assets/img/why-reuse.jpg" alt="内装が取り払われた既存住戸。これから再設計される空間。" width="1600" height="900" loading="lazy" decoding="async">
           </picture>
           <figcaption class="figure__cap">EXISTING STOCK ／ すでに、ここにある。</figcaption>
         </figure>
@@ -383,7 +383,7 @@ const finale = `<section class="film film--tall film--center" id="finale" aria-l
   <div class="film__media">
     <picture>
       <source type="image/webp" srcset="/assets/img/video-posters/kachinova-future-720.webp 720w, /assets/img/video-posters/kachinova-future-1280.webp 1280w, /assets/img/video-posters/kachinova-future.webp 1920w" sizes="100vw">
-      <img src="/assets/img/video-posters/kachinova-future-1280.jpg" alt="夜、窓に明かりの灯る住宅と東京の都市景観。" width="1920" height="1080" loading="lazy" decoding="async">
+      <img src="/assets/img/video-posters/kachinova-future-1280.jpg" alt="${FILMS.future.alt}" width="1920" height="1080" loading="lazy" decoding="async">
     </picture>
     <video muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"
            data-video="/assets/videos/kachinova-future"></video>

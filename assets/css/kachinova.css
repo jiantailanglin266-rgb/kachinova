@@ -583,6 +583,13 @@ section { position: relative; background: transparent; }
     linear-gradient(180deg, rgba(5, 7, 10, .76) 0%, rgba(5, 7, 10, .14) 30%, rgba(5, 7, 10, .24) 58%, rgba(5, 7, 10, .93) 100%),
     linear-gradient(90deg, rgba(5, 7, 10, .78) 0%, rgba(5, 7, 10, .30) 38%, rgba(5, 7, 10, .02) 74%);
 }
+/* Inner heroes sit on a still rather than the dark city plate, and carry the
+   page's h1 — they get the stronger, film-grade scrim. */
+.hero--inner .hero__scrim {
+  background:
+    linear-gradient(180deg, rgba(5, 7, 10, .82) 0%, rgba(5, 7, 10, .40) 26%, rgba(5, 7, 10, .48) 60%, rgba(5, 7, 10, .95) 100%),
+    linear-gradient(90deg, rgba(5, 7, 10, .92) 0%, rgba(5, 7, 10, .78) 30%, rgba(5, 7, 10, .34) 62%, rgba(5, 7, 10, .06) 88%);
+}
 .film__scrim {
   background:
     linear-gradient(180deg, rgba(5, 7, 10, .80) 0%, rgba(5, 7, 10, .30) 26%, rgba(5, 7, 10, .38) 62%, rgba(5, 7, 10, .90) 92%, var(--ink) 100%),
@@ -643,8 +650,20 @@ section { position: relative; background: transparent; }
 
 .film__index {
   font-family: var(--f-mono); font-size: var(--t-xs); letter-spacing: .3em;
-  color: var(--steel); margin-bottom: 1.6rem;
+  color: var(--mist); margin-bottom: 1.6rem;
 }
+
+/* Small type over a moving plate needs more help than small type over a flat
+   ground: the background luminance changes under it every frame. Lift the
+   labels and give the whole film body a wide, soft shadow — invisible as a
+   shadow, but it holds contrast when a bright part of the shot drifts past. */
+.film__body { text-shadow: 0 1px 20px rgba(5, 7, 10, .62); }
+.film .eyebrow,
+.hero .eyebrow { color: var(--ice); }
+.film .eyebrow::before,
+.hero .eyebrow::before { opacity: 1; }
+.hero__inner { text-shadow: 0 1px 20px rgba(5, 7, 10, .55); }
+.hero__inner .scroll-cue { color: var(--mist); }
 
 /* Data motes for the AI film — quiet, not a sci-fi HUD */
 .motes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2.2rem; }

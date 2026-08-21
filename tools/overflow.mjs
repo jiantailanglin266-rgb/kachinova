@@ -4,7 +4,8 @@ let t=process.argv[2]||'/'; if(!t.startsWith('/'))t='/'+t;
 const w=parseInt(process.argv[3]||'390',10);
 const b=await puppeteer.launch({executablePath:CHROME,headless:'new',args:['--hide-scrollbars'],defaultViewport:{width:w,height:844}});
 const p=await b.newPage();
-await p.goto('http://localhost:4477'+t,{waitUntil:'networkidle2'});
+const BASE=process.env.BASE_URL||'http://localhost:4477';
+await p.goto(BASE+t,{waitUntil:'networkidle2'});
 await p.evaluate(()=>document.fonts.ready);
 const r=await p.evaluate((vw)=>{
   document.documentElement.style.overflowX='visible';

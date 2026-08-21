@@ -60,7 +60,7 @@ ${statement({
         <figure class="figure figure--mask">
           <picture>
             <source type="image/webp" srcset="/assets/img/why-reuse.webp">
-            <img src="/assets/img/why-reuse.jpg" alt="水辺に建ち並ぶ既存の分譲マンション。" width="1600" height="1190" loading="lazy" decoding="async">
+            <img src="/assets/img/why-reuse.jpg" alt="内装が取り払われた既存住戸。これから再設計される空間。" width="1600" height="900" loading="lazy" decoding="async">
           </picture>
           <figcaption class="figure__cap">EXISTING STOCK ／ すでに、ここにある。</figcaption>
         </figure>
