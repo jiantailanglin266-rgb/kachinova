@@ -1,5 +1,5 @@
 import { SITE } from '../site.mjs';
-import { pageHero, film, plan, breadcrumb, breadcrumbLd, ctaSplit } from '../components.mjs';
+import { pageHero, film, plan, breadcrumb, breadcrumbLd, ctaSplit, abs } from '../components.mjs';
 
 const trail = [{ name: 'HOME', href: '/' }, { name: 'BUSINESS' }];
 
@@ -186,7 +186,7 @@ export default {
     '@context': 'https://schema.org',
     '@type': 'Service',
     serviceType: '中古区分マンションの買取・再生・再販',
-    provider: { '@type': 'Organization', name: SITE.name, url: SITE.origin + '/' },
+    provider: { '@type': 'Organization', name: SITE.name, url: abs('/') },
     areaServed: { '@type': 'Country', name: 'Japan' },
     inLanguage: 'ja',
   }],

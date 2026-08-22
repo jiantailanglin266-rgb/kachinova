@@ -1,5 +1,5 @@
 import { SITE } from '../site.mjs';
-import { pageHero, statement, breadcrumb, breadcrumbLd, ctaSplit, marquee } from '../components.mjs';
+import { pageHero, statement, breadcrumb, breadcrumbLd, ctaSplit, marquee, abs } from '../components.mjs';
 
 const trail = [{ name: 'HOME', href: '/' }, { name: 'ABOUT' }];
 
@@ -129,7 +129,7 @@ export default {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     name: 'ABOUT — KACHINOVA',
-    url: SITE.origin + '/about.html',
+    url: abs('/about.html'),
     inLanguage: 'ja',
   }],
   body,

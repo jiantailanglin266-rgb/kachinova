@@ -1,5 +1,5 @@
 import { SITE, FILMS } from '../site.mjs';
-import { film, statement, plan, marquee, ctaSplit, THEME } from '../components.mjs';
+import { film, statement, plan, marquee, ctaSplit, THEME, orgLd, abs } from '../components.mjs';
 const LOGO_MARK = `/assets/img/logo-mark${THEME === 'dark' ? '-dark' : ''}.webp`;
 
 /* ---------------------------------------------------------------- 01 hero -- */
@@ -419,23 +419,15 @@ export default {
     srcset: '/assets/img/video-posters/kachinova-city-720.webp 720w, /assets/img/video-posters/kachinova-city-1280.webp 1280w, /assets/img/video-posters/kachinova-city.webp 1920w',
   },
   jsonld: [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: SITE.name,
-      alternateName: SITE.nameJa,
-      url: SITE.origin + '/',
-      logo: SITE.origin + '/assets/img/logo-lockup.png',
+    orgLd({
       description:
         'AI・データ・スマートホーム・省エネ技術を用いて中古区分マンションを再設計する不動産テクノロジー企業。',
-      slogan: SITE.claim,
-      areaServed: { '@type': 'Country', name: 'Japan' },
-    },
+    }),
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: SITE.name,
-      url: SITE.origin + '/',
+      url: abs('/'),
       inLanguage: 'ja',
     },
   ],

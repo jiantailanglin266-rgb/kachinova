@@ -1,16 +1,18 @@
 import { SITE, COMPANY } from '../site.mjs';
-import { pageHero, breadcrumb, breadcrumbLd, ctaSplit, fact } from '../components.mjs';
+import { pageHero, breadcrumb, breadcrumbLd, ctaSplit, fact,
+         telLink, mailLink, fullAddress, orgLd, abs } from '../components.mjs';
 
 const trail = [{ name: 'HOME', href: '/' }, { name: 'COMPANY' }];
 
 const ROWS = [
-  ['商号 ／ COMPANY NAME', fact(COMPANY.legalName, '登記上の正式名称を確認のうえ掲載します。ブランド名は KACHINOVA（カチノヴァ）です。')],
+  ['商号 ／ COMPANY NAME', fact(COMPANY.legalName, COMPANY.legalName ? '' : '登記上の正式名称を確認のうえ掲載します。')],
   ['代表者 ／ REPRESENTATIVE', fact(COMPANY.representative)],
   ['設立 ／ FOUNDED', fact(COMPANY.founded)],
   ['資本金 ／ CAPITAL', fact(COMPANY.capital)],
-  ['所在地 ／ ADDRESS', fact(COMPANY.address)],
-  ['電話 ／ TEL', fact(COMPANY.tel)],
-  ['メール ／ EMAIL', fact(COMPANY.email)],
+  ['所在地 ／ ADDRESS', COMPANY.address ? fullAddress() : fact(null)],
+  ['電話 ／ TEL', COMPANY.tel ? telLink() : fact(null)],
+  ['FAX', COMPANY.fax ? `<span>${COMPANY.fax}</span>` : fact(null)],
+  ['メール ／ EMAIL', COMPANY.email ? mailLink() : fact(null)],
   ['宅地建物取引業免許 ／ LICENSE', fact(COMPANY.license, '免許番号は、免許証の記載どおりに掲載します。未確定の情報は一切記載しません。')],
   ['宅地建物取引士 ／ LICENSED AGENT', fact(COMPANY.licenseHolder)],
   ['事業内容 ／ BUSINESS', `<ul style="display:grid;gap:.4rem">${COMPANY.businesses.map((b) => `<li>・${b}</li>`).join('')}</ul>`],
@@ -70,7 +72,7 @@ ${pageHero({
       <div>
         <dt>お問い合わせ窓口</dt>
         <dd>${COMPANY.tel || COMPANY.email
-          ? [COMPANY.tel, COMPANY.email].filter(Boolean).join(' ／ ')
+          ? `${telLink()}　／　${mailLink()}<small><a href="/contact.html">お問い合わせフォーム</a>もご利用いただけます。</small>`
           : '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span><small>当面は<a href="/contact.html">お問い合わせフォーム</a>をご利用ください。</small>'}</dd>
       </div>
     </dl>
@@ -86,17 +88,11 @@ export default {
   title: 'COMPANY｜会社概要 - KACHINOVA',
   description:
     'KACHINOVA の会社概要。商号・代表者・所在地・宅地建物取引業免許などの企業情報と、お取引にあたってご確認いただきたい事項を掲載しています。',
-  jsonld: [breadcrumbLd([{ name: 'HOME', href: '/' }, { name: 'COMPANY', href: '/company.html' }]), {
-    /* Only verified facts are emitted. Address / licence are omitted entirely
-       until confirmed — an incomplete RealEstateAgent node is better than a
-       fabricated one. */
-    '@context': 'https://schema.org',
-    '@type': 'RealEstateAgent',
-    name: SITE.name,
-    url: SITE.origin + '/company.html',
-    image: SITE.origin + '/assets/img/og-kachinova.jpg',
-    areaServed: { '@type': 'Country', name: 'Japan' },
-    inLanguage: 'ja',
-  }],
+  jsonld: [
+    breadcrumbLd([{ name: 'HOME', href: '/' }, { name: 'COMPANY', href: '/company.html' }]),
+    /* Address, telephone and email are emitted because they are confirmed.
+       The licence number is still absent, so no licence claim appears here. */
+    orgLd({ url: abs('/company.html') }),
+  ],
   body,
 };

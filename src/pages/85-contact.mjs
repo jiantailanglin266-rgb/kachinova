@@ -1,5 +1,6 @@
 import { SITE, COMPANY } from '../site.mjs';
-import { pageHero, breadcrumb, breadcrumbLd, formNote, honeypot } from '../components.mjs';
+import { pageHero, breadcrumb, breadcrumbLd, formNote, honeypot,
+         telLink, mailLink, fullAddress, abs } from '../components.mjs';
 
 const trail = [{ name: 'HOME', href: '/' }, { name: 'CONTACT' }];
 
@@ -105,9 +106,10 @@ ${pageHero({
     </form>
 
     <dl class="data u-mt-l reveal">
-      <div><dt>電話 ／ TEL</dt><dd>${COMPANY.tel || '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
-      <div><dt>メール ／ EMAIL</dt><dd>${COMPANY.email || '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
-      <div><dt>所在地 ／ ADDRESS</dt><dd>${COMPANY.address || '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
+      <div><dt>電話 ／ TEL</dt><dd>${COMPANY.tel ? telLink() : '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
+      <div><dt>FAX</dt><dd>${COMPANY.fax || '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
+      <div><dt>メール ／ EMAIL</dt><dd>${COMPANY.email ? mailLink() : '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
+      <div><dt>所在地 ／ ADDRESS</dt><dd>${COMPANY.address ? fullAddress() : '<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>'}</dd></div>
     </dl>
   </div>
 </section>`;
@@ -123,7 +125,7 @@ export default {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
     name: 'CONTACT — KACHINOVA',
-    url: SITE.origin + '/contact.html',
+    url: abs('/contact.html'),
     inLanguage: 'ja',
   }],
   body,

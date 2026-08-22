@@ -1,5 +1,5 @@
 import { SITE } from '../site.mjs';
-import { pageHero, breadcrumb, breadcrumbLd, ctaSplit } from '../components.mjs';
+import { pageHero, breadcrumb, breadcrumbLd, ctaSplit, abs } from '../components.mjs';
 
 const trail = [{ name: 'HOME', href: '/' }, { name: 'JOURNAL' }];
 
@@ -82,7 +82,7 @@ export default {
     '@context': 'https://schema.org',
     '@type': 'Blog',
     name: 'KACHINOVA JOURNAL',
-    url: SITE.origin + '/journal.html',
+    url: abs('/journal.html'),
     inLanguage: 'ja',
   }],
   body,

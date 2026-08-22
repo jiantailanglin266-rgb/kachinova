@@ -1136,6 +1136,13 @@ section { position: relative; background: transparent; }
   .footer__brand .brand__word { height: 20px; }
 }
 .footer__brand p { font-size: .84rem; color: var(--steel); line-height: 1.9; max-width: 34ch; }
+.footer__addr {
+  font-style: normal; margin-top: 1.1rem;
+  font-size: .8rem; line-height: 1.95; color: var(--fg-mute);
+}
+.footer__addr a { color: var(--fg-mute); text-decoration: underline; text-underline-offset: 3px; }
+.footer__addr a:hover { color: var(--fg); }
+.footer__lic { display: inline-block; margin-top: .5rem; color: var(--steel); }
 .footer-bottom {
   display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between;
   align-items: center; margin-top: clamp(1.8rem, 3.6vw, 2.8rem);

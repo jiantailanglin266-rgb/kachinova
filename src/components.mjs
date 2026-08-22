@@ -2,23 +2,32 @@
    Plain template functions: the build emits static HTML, the browser gets no
    framework. Every component degrades to readable markup without CSS or JS. */
 
-import { SITE, NAV, NAV_MORE, FILMS } from './site.mjs';
+import { SITE, NAV, NAV_MORE, FILMS, COMPANY, POSTAL } from './site.mjs';
 
 /* The logo ships as two artworks: the original (dark ink + gold, for paper)
    and a knockout (off-white + gold, for ink). Pick by theme. */
 export const THEME = (process.env.THEME || 'light').toLowerCase();
 const LOGO = THEME === 'dark' ? '-dark' : '';
 
+/* Absolute URL for structured data / canonical / OG.
+   BASE_PATH is folded in here so JSON-LD can never drift from the real URL —
+   withBase() in the build only rewrites HTML attributes, not script contents. */
+export const BASE = (() => {
+  const m = String(process.env.BASE_PATH || '').match(/([^\/:]+)\/?$/);
+  return m ? '/' + m[1] : '';
+})();
+export const abs = (path = '/') => SITE.origin + BASE + (path === '/' ? '/' : path);
+
 export const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /* ------------------------------------------------------------------ head -- */
 export function head(page) {
-  const base = (() => { const m = String(process.env.BASE_PATH || '').match(/([^\/:]+)\/?$/); return m ? '/' + m[1] : ''; })();
+  const base = BASE;
   const noindex = process.env.NOINDEX === '1' || page.noindex;
   const title = page.title;
-  const url = SITE.origin + base + (page.path === '/index.html' ? '/' : page.path);
-  const ogImg = SITE.origin + base + '/assets/img/og-kachinova.jpg';
+  const url = abs(page.path === '/index.html' ? '/' : page.path);
+  const ogImg = abs('/assets/img/og-kachinova.jpg');
   const ld = page.jsonld ? page.jsonld : [];
 
   return `<meta charset="utf-8">
@@ -106,6 +115,12 @@ export function footer() {
           <img class="brand__word" src="/assets/img/logo-word${LOGO}.webp" alt="KACHINOVA" width="1211" height="96" loading="lazy">
         </span>
         <p>${SITE.claimJa}<br>${SITE.sub}</p>
+        ${COMPANY.address ? `<address class="footer__addr">
+          ${COMPANY.legalName}<br>
+          ${fullAddress()}<br>
+          TEL ${telLink()}　／　${mailLink()}
+          ${COMPANY.license ? `<br><span class="footer__lic">宅地建物取引業免許　${COMPANY.license}</span>` : ''}
+        </address>` : ''}
       </div>
       ${col('COMPANY', NAV.slice(0, 3))}
       ${col('EXPLORE', [...NAV.slice(3), ...NAV_MORE.slice(0, 2)])}
@@ -247,7 +262,7 @@ export function breadcrumbLd(trail) {
     '@type': 'BreadcrumbList',
     itemListElement: trail.map((t, i) => ({
       '@type': 'ListItem', position: i + 1, name: t.name,
-      item: SITE.origin + (t.href || ''),
+      item: abs(t.href || '/'),
     })),
   };
 }
@@ -285,6 +300,38 @@ export function pageHero({ eyebrow, title, jp, lede, shot, still, trail }) {
 /* ------------------------------------------------ DATA_REQUIRED placeholder */
 /* Renders a confirmed value, or a visible, honest placeholder. Nothing about
    the company, its licence or its record is ever invented. */
+/* Clickable contact primitives. Rendered only when the value is confirmed —
+   an empty tel: link is worse than no link. */
+export const telLink = (v = COMPANY.tel) =>
+  v ? `<a href="tel:${v.replace(/[^0-9+]/g, '')}">${esc(v)}</a>` : '';
+export const mailLink = (v = COMPANY.email) =>
+  v ? `<a href="mailto:${esc(v)}">${esc(v)}</a>` : '';
+export const fullAddress = () =>
+  COMPANY.address ? `〒${esc(COMPANY.postalCode)}<br>${esc(COMPANY.address)}` : '';
+
+/* Emitted into JSON-LD only when every part is confirmed. */
+export function orgLd(extra = {}) {
+  const o = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateAgent',
+    name: COMPANY.legalName || SITE.name,
+    alternateName: SITE.name,
+    url: abs('/'),
+    logo: abs('/assets/img/logo-lockup.png'),
+    image: abs('/assets/img/og-kachinova.jpg'),
+    slogan: SITE.claim,
+    areaServed: { '@type': 'Country', name: 'Japan' },
+    inLanguage: 'ja',
+    ...extra,
+  };
+  if (COMPANY.address) o.address = POSTAL;
+  if (COMPANY.tel) o.telephone = COMPANY.tel;
+  if (COMPANY.fax) o.faxNumber = COMPANY.fax;
+  if (COMPANY.email) o.email = COMPANY.email;
+  if (COMPANY.founded) o.foundingDate = COMPANY.founded.replace('年', '');
+  return o;
+}
+
 export function fact(value, note) {
   if (value) return esc(value) + (note ? `<small>${note}</small>` : '');
   return `<span class="chip chip--todo">確認中 ／ DATA_REQUIRED</span>` +
@@ -294,7 +341,9 @@ export function fact(value, note) {
 export function formNote() {
   return `<p class="form__note">ご入力いただいた個人情報は、お問い合わせへの回答および査定のご案内にのみ利用し、
 ご本人の同意なく第三者へ提供いたしません。詳細は<a href="/privacy.html" style="color:var(--cyan)">プライバシーポリシー</a>をご確認ください。<br>
-※ 送信先メールアドレス・フォーム基盤は未設定です（DATA_REQUIRED）。設定までの間、送信ボタンはご利用のメールソフトを起動します。</p>`;
+※ フォーム送信基盤は設定中です。それまでの間、送信ボタンはご利用のメールソフトを起動し、
+${COMPANY.email ? `<a href="mailto:${COMPANY.email}">${COMPANY.email}</a> 宛の下書きを作成します` : '下書きを作成します'}。
+お急ぎの場合は ${COMPANY.tel ? `お電話（${telLink()}）` : 'お電話'} でも承ります。</p>`;
 }
 
 export function honeypot() {

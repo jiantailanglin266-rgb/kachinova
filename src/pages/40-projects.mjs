@@ -1,5 +1,5 @@
 import { SITE } from '../site.mjs';
-import { pageHero, breadcrumb, breadcrumbLd, ctaSplit } from '../components.mjs';
+import { pageHero, breadcrumb, breadcrumbLd, ctaSplit, abs } from '../components.mjs';
 
 const trail = [{ name: 'HOME', href: '/' }, { name: 'PROJECTS' }];
 
@@ -86,7 +86,7 @@ export default {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'REVALUE PROJECTS',
-    url: SITE.origin + '/projects.html',
+    url: abs('/projects.html'),
     inLanguage: 'ja',
   }],
   body,

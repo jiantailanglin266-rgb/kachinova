@@ -15,26 +15,45 @@ export const SITE = {
 };
 
 /* --------------------------------------------------------------------------
-   DATA_REQUIRED — every value below is unverified.
-   `null` renders as a visible "確認中 / DATA_REQUIRED" chip so nothing false
-   can ever reach the page by accident.
+   Confirmed company information. Anything still `null` renders as a visible
+   "確認中 / DATA_REQUIRED" chip — it is never invented, never guessed, and
+   never quietly omitted. See DATA_REQUIRED.md.
    -------------------------------------------------------------------------- */
 export const COMPANY = {
-  legalName: null,          // 商号（登記上の正式名称）
-  representative: null,     // 代表者
-  founded: null,            // 設立年月
-  capital: null,            // 資本金
-  address: null,            // 本店所在地
-  tel: null,                // 代表電話
-  email: null,              // 問い合わせメール
-  license: null,            // 宅地建物取引業免許番号
-  licenseHolder: null,      // 宅地建物取引士（専任）
+  legalName: '株式会社KACHINOVA',
+  representative: null,     // 代表者 — 未提供
+  founded: '2025年',
+  capital: '10,000,000円',
+  postalCode: '150-0031',
+  address: '東京都渋谷区桜丘町29-24',
+  tel: '03-6821-9132',
+  fax: '03-6821-9132',
+  email: 'info@kachinova.com',
+  // 宅地建物取引業法上、広告には免許番号の表示義務があります。
+  // 支給された「東京都（1）114064」を法定の表記に展開したもの。
+  // 東京都内のみに事務所を置く業者の免許は「東京都知事」免許、(1) は更新回数。
+  // ★免許証の記載と一字一句一致しているか、公開前に必ず照合してください。
+  license: '東京都知事（1）第114064号',
+  licenseHolder: null,      // 専任の宅地建物取引士 — 未提供
+  // 登記および会社案内の記載どおり。サイトの物語は現在この中の
+  // 「不動産事業／売買事業」に相当する部分だけを扱っています。
   businesses: [
-    '中古区分マンションの買取・再生・再販',
-    '不動産の企画・設計・リノベーション',
-    'スマートホーム／省エネ設備の導入企画',
-    '不動産データ・AI活用に関する研究開発',
+    '不動産事業',
+    '民泊事業',
+    '賃貸管理事業',
+    '売買事業',
+    'サブリース事業',
   ],
+};
+
+/* Structured-data address, emitted only because every part of it is confirmed. */
+export const POSTAL = {
+  '@type': 'PostalAddress',
+  postalCode: COMPANY.postalCode,
+  addressRegion: '東京都',
+  addressLocality: '渋谷区',
+  streetAddress: '桜丘町29-24',
+  addressCountry: 'JP',
 };
 
 export const NAV = [

@@ -8,31 +8,48 @@
 
 ---
 
-## A. 法定・企業情報（最優先／掲載必須）
+## A. 法定・企業情報
 
 `src/site.mjs` → `COMPANY`
 
-| キー | 項目 | 影響ページ | 備考 |
-|---|---|---|---|
-| `legalName` | 商号（登記上の正式名称） | company / privacy | 「KACHINOVA」はブランド名。登記名と異なる場合は両方必要 |
-| `representative` | 代表者名 | company | |
-| `founded` | 設立年月 | company | |
-| `capital` | 資本金 | company | |
-| `address` | 本店所在地 | company / contact / privacy | 郵便番号・ビル名まで |
-| `tel` | 代表電話番号 | company / contact / privacy | |
-| `email` | 問い合わせメールアドレス | company / contact / privacy / **全フォーム** | 未設定の間、フォームはメーラー起動にフォールバック |
-| `license` | **宅地建物取引業免許番号** | company | 免許証の記載どおり。**絶対に推測で書かない** |
-| `licenseHolder` | 専任の宅地建物取引士 | company | |
+### 確定・掲載済み ✅
 
-> ⚠️ 宅地建物取引業免許番号・所在地・代表者は、宅建業法上の表示義務に関わります。
-> 確定するまでは空欄（DATA_REQUIRED 表示）のまま公開してください。
+| 項目 | 値 |
+|---|---|
+| 商号 | 株式会社KACHINOVA |
+| 所在地 | 〒150-0031 東京都渋谷区桜丘町29-24 |
+| 設立 | 2025年 |
+| 資本金 | 10,000,000円 |
+| 電話 / FAX | 03-6821-9132 |
+| メール | info@kachinova.com |
+| 宅地建物取引業免許 | 東京都知事（1）第114064号 |
+| 事業内容 | 不動産事業／民泊事業／賃貸管理事業／売買事業／サブリース事業 |
+
+### 未確定 ⚠️
+
+| キー | 項目 | 影響ページ |
+|---|---|---|
+| `representative` | 代表者名 | company |
+| `licenseHolder` | 専任の宅地建物取引士 | company |
+
+### 要確認 ★
+
+1. **免許番号の表記**　支給された「東京都（1）114064」を、宅建業法上の
+   標準表記「**東京都知事（1）第114064号**」に展開して掲載しています。
+   都内のみに事務所を置く業者の免許は知事免許、(1) は更新回数、という前提です。
+   **免許証の記載と一字一句一致しているか照合してください。**
+2. **事業内容とサイトの物語の範囲**　登記上の事業内容は5つですが、サイトの本文は
+   そのうち「不動産事業／売買事業」に相当する **中古区分マンションの買取・再生・再販**
+   だけを扱っています。**民泊事業・賃貸管理事業・サブリース事業はページが存在しません。**
+   会社概要には正式な5事業を掲載済みですが、これらを事業として打ち出すなら
+   BUSINESS ページの追補が必要です。
 
 ## B. サイト設定
 
 | 対象 | 場所 | 内容 |
 |---|---|---|
-| 本番オリジン | `src/site.mjs` → `SITE.origin` | 現在 `https://kachinova.co.jp` を仮置き。canonical / OG / sitemap / JSON-LD に反映 |
-| フォーム送信先 | `src/pages/80-sell.mjs`, `85-contact.mjs` の `action="#"` | Formspree / SSGform / 自社 API など。設定すると JS は通常の POST に切り替わる |
+| 本番オリジン | `src/site.mjs` → `SITE.origin` | 現在 GitHub Pages。メールが `@kachinova.com` のため **kachinova.com** が本命と思われますが未確認 |
+| フォーム送信先 | `src/pages/80-sell.mjs`, `85-contact.mjs` の `action="#"` | Formspree / SSGform / 自社 API など。未設定の間は info@kachinova.com 宛のメーラー起動にフォールバック |
 | アクセス解析 | `privacy.html` 第9項 | 導入したツール名・提供事業者・オプトアウト方法を追記 |
 | プライバシーポリシー制定日 | `src/pages/90-privacy.mjs` | |
 
