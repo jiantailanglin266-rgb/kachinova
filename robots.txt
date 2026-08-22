@@ -1,3 +1,16 @@
 # Review build — not for public search results.
+# noindex applies to search engines. LLM crawlers are a separate decision and
+# are left allowed so assistants can answer from llms.txt.
 User-agent: *
 Disallow: /
+
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /

@@ -6,6 +6,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://jiantailanglin266-rgb.github.io/kachinova/shibuya.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://jiantailanglin266-rgb.github.io/kachinova/about.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>

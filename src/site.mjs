@@ -56,6 +56,21 @@ export const POSTAL = {
   addressCountry: 'JP',
 };
 
+/* --------------------------------------------------------------------------
+   SEO / MEO の軸。キーワードは「詰め込む」のではなく、実体のあるページを
+   1本立てて、そのページのタイトル・見出し・本文・構造化データを一致させる。
+   -------------------------------------------------------------------------- */
+export const AREA = {
+  /* 本社所在地は確定事実。対応エリアは事業判断なので DATA_REQUIRED 扱い。
+     ★ 現在は「渋谷区を中心とした東京23区」と記載しています。実際の対応範囲と
+       異なる場合は必ず修正してください（誇大広告になり得ます）。 */
+  base: '渋谷区',
+  primary: ['渋谷区'],
+  secondary: ['目黒区', '世田谷区', '港区', '新宿区', '中央区', '品川区', '文京区', '台東区'],
+  statement: '渋谷区を中心とした東京23区',
+  confirmed: false,
+};
+
 export const NAV = [
   { href: '/about.html',      en: 'ABOUT',      ja: '私たちについて' },
   { href: '/business.html',   en: 'BUSINESS',   ja: '事業内容' },
@@ -66,6 +81,7 @@ export const NAV = [
 ];
 
 export const NAV_MORE = [
+  { href: '/shibuya.html', en: 'SHIBUYA', ja: '渋谷の不動産' },
   { href: '/lab.html',     en: 'LAB',     ja: '研究開発' },
   { href: '/journal.html', en: 'JOURNAL', ja: 'ジャーナル' },
   { href: '/sell.html',    en: 'SELL',    ja: '売却・査定' },

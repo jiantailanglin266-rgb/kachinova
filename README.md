@@ -44,6 +44,7 @@ Node は「ヘッダー・フッター・共通パーツを 1 か所で管理す
 │
 ├─ images/                    支給素材の原本（配信不要／改変しない）
 ├─ DATA_REQUIRED.md           未確定情報の一覧 ← 公開前に必ず確認
+├─ SEO.md                     SEO / LLMO / MEO の実装内容と、残作業
 ├─ DESIGN_SYSTEM.md           デザイン言語の定義
 └─ STORYBOARD.md              TOP ページの絵コンテと 6 本の動画配置
 ```
@@ -67,9 +68,14 @@ npm run serve        # http://localhost:4477
 （トライトーンの階調ランプ＋わずかな寒色寄せ＋グレイン）を当て、1本の映像作品として成立させています。
 
 ```bash
-npm run media     # 静止画：グレード＋ロゴ抽出＋OG生成
+npm run media     # 静止画：グレード＋ロゴ抽出
 npm run films     # 動画：納品6本のグレード・ループ化・ポスター書き出し
+npm run og        # OGカード13枚（ページごと。要ローカルサーバー）
+npm run contrast  # 実描画ピクセルに対するコントラスト検査
 ```
+
+> `npm run og` は headless Chrome でサイトのCSSを読んでカードを描くため、
+> **先にローカルサーバーを起動**しておく必要があります（`BASE_URL` で指定）。
 
 ### テーマ（LIGHT / DARK）
 

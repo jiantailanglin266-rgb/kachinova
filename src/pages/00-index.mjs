@@ -85,8 +85,10 @@ const business = `<section class="band" id="what-we-do" aria-labelledby="wwd-t">
         <p class="eyebrow">WHAT WE DO</p>
         <h2 class="display display--xxl u-mt-s" id="wwd-t">Residential<br>Revalue</h2>
         <p class="jp-display jp-display--sm u-mt-s">中古区分マンションを、<br>買い取り、分析し、再設計する。</p>
+        <p class="prose u-mt-s" style="font-size:.92rem">本社は東京都渋谷区桜丘町。<a href="/shibuya.html" style="color:var(--cyan)">渋谷区を中心とした東京23区</a>で、中古区分マンションの買取を行っています。</p>
         <div class="btn-row u-mt">
           <a class="btn" href="/business.html">事業内容を見る<i></i></a>
+          <a class="btn" href="/shibuya.html">渋谷の不動産<i></i></a>
         </div>
       </div>
       <div>
@@ -411,9 +413,9 @@ export default {
   nav: '/',
   changefreq: 'weekly',
   priority: '1.0',
-  title: 'KACHINOVA｜住まいの価値を、再発明する。中古区分マンションの買取・再生・再販',
+  title: 'KACHINOVA｜渋谷の不動産テクノロジー企業｜中古区分マンションの買取・再販',
   description:
-    'KACHINOVA（カチノヴァ）は、AI・データ・スマートホーム・省エネ技術で中古区分マンションを再設計するリアルエステート・テクノロジーカンパニーです。買取・再生・再販を通じて、既存住宅の価値を組み立て直します。',
+    '株式会社KACHINOVA（カチノヴァ）は東京都渋谷区の不動産テクノロジー企業です。中古区分マンションを買い取り、AI・データ・スマートホーム・省エネ技術で再設計して再販します。査定無料。宅地建物取引業免許 東京都知事（1）第114064号。',
   preloadPoster: {
     webp: '/assets/img/video-posters/kachinova-city-1280.webp',
     srcset: '/assets/img/video-posters/kachinova-city-720.webp 720w, /assets/img/video-posters/kachinova-city-1280.webp 1280w, /assets/img/video-posters/kachinova-city.webp 1920w',

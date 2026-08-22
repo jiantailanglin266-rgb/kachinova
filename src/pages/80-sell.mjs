@@ -51,6 +51,7 @@ ${pageHero({
         <p>${note}</p>
       </div>`).join('\n      ')}
     </div>
+    <p class="prose u-mt" style="font-size:.95rem">対応エリアは<a href="/shibuya.html" style="color:var(--cyan)">渋谷区を中心とした東京23区</a>です。本社は東京都渋谷区桜丘町29-24。</p>
     <p class="form__note u-mt">買取価格は、市場で時間をかけて売却した場合の想定価格とは異なります。ご売却の目的やご希望の時期に応じて、仲介での売却と比較したうえでご判断ください。ご要望があれば、その比較の考え方もご説明します。</p>
   </div>
 </section>
@@ -133,9 +134,9 @@ export default {
   path: '/sell.html',
   nav: '/sell.html',
   priority: '0.95',
-  title: 'SELL｜区分マンションの買取・無料査定のご相談 - KACHINOVA',
+  title: '渋谷の区分マンション買取査定（無料）｜中古マンション売却 - KACHINOVA',
   description:
-    '区分マンションの売却をご検討の方へ。KACHINOVA が直接買主となる買取をご提案します。査定は無料。再生後の価値を起点に評価するため、築年数や現況だけで判断しません。',
+    '渋谷区を中心とした東京23区で、中古区分マンションの買取査定を無料で承ります。KACHINOVA が直接買主となるため仲介手数料は不要。再生後の価値を起点に評価するので、築年数や現況だけで判断しません。',
   jsonld: [breadcrumbLd([{ name: 'HOME', href: '/' }, { name: 'SELL', href: '/sell.html' }]), {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',

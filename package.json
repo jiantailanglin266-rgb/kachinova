@@ -10,7 +10,9 @@
     "serve": "npx -y serve -l 4477 .",
     "shot": "node tools/shot.mjs",
     "check": "node tools/overflow.mjs",
-    "films": "python tools/films.py"
+    "films": "python tools/films.py",
+    "og": "node tools/og.mjs",
+    "contrast": "node tools/contrast.mjs"
   },
   "devDependencies": {
     "puppeteer-core": "^23.0.0"

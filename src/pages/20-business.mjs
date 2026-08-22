@@ -179,7 +179,7 @@ export default {
   path: '/business.html',
   nav: '/business.html',
   priority: '0.9',
-  title: 'BUSINESS｜中古区分マンションの買取・再生・再販 - KACHINOVA',
+  title: 'BUSINESS｜中古区分マンションの買取再販の流れ - KACHINOVA',
   description:
     'KACHINOVA の事業内容。中古区分マンションの買取（ACQUIRE）から分析・再設計・再生・価値創造まで、5つの工程を一貫して自社で設計・管理します。ご売却の流れもご案内します。',
   jsonld: [breadcrumbLd([{ name: 'HOME', href: '/' }, { name: 'BUSINESS', href: '/business.html' }]), {

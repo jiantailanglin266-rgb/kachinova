@@ -2,7 +2,7 @@
    Plain template functions: the build emits static HTML, the browser gets no
    framework. Every component degrades to readable markup without CSS or JS. */
 
-import { SITE, NAV, NAV_MORE, FILMS, COMPANY, POSTAL } from './site.mjs';
+import { SITE, NAV, NAV_MORE, FILMS, COMPANY, POSTAL, AREA } from './site.mjs';
 
 /* The logo ships as two artworks: the original (dark ink + gold, for paper)
    and a knockout (off-white + gold, for ink). Pick by theme. */
@@ -27,7 +27,10 @@ export function head(page) {
   const noindex = process.env.NOINDEX === '1' || page.noindex;
   const title = page.title;
   const url = abs(page.path === '/index.html' ? '/' : page.path);
-  const ogImg = abs('/assets/img/og-kachinova.jpg');
+  /* Per-page card, rendered from the page's own film still by tools/og.mjs.
+     Falls back to the brand card for anything without one. */
+  const ogSlug = (page.path === '/index.html' ? 'index' : page.path.replace(/^\//, '').replace(/\.html$/, ''));
+  const ogImg = abs(`/assets/img/og/${ogSlug}.jpg`);
   const ld = page.jsonld ? page.jsonld : [];
 
   return `<meta charset="utf-8">
@@ -48,6 +51,8 @@ export function head(page) {
 <meta property="og:image" content="${ogImg}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="${esc(page.ogAlt || title)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(page.description)}">
@@ -123,7 +128,7 @@ export function footer() {
         </address>` : ''}
       </div>
       ${col('COMPANY', NAV.slice(0, 3))}
-      ${col('EXPLORE', [...NAV.slice(3), ...NAV_MORE.slice(0, 2)])}
+      ${col('EXPLORE', [...NAV.slice(3), ...NAV_MORE.slice(0, 3)])}
       ${col('CONTACT', [
         { href: '/sell.html', en: 'SELL YOUR PROPERTY', ja: '売却・無料査定' },
         { href: '/contact.html', en: 'GENERAL ENQUIRY', ja: '一般のお問い合わせ' },
@@ -310,6 +315,36 @@ export const fullAddress = () =>
   COMPANY.address ? `〒${esc(COMPANY.postalCode)}<br>${esc(COMPANY.address)}` : '';
 
 /* Emitted into JSON-LD only when every part is confirmed. */
+/* Q&A blocks are the single most quotable unit for an LLM and the only rich
+   result Google grants a page like this. Keep the answer self-contained: an
+   answer that only makes sense in page context is useless once it is lifted. */
+export function faqLd(pairs) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: 'ja',
+    mainEntity: pairs.map(([q, a]) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+}
+
+export function faqBlock(pairs, { id = 'faq', eyebrow = 'FAQ', title = 'よくあるご質問' } = {}) {
+  return `<section class="band--tight" id="${id}" aria-labelledby="${id}-t">
+  <div class="shell shell--narrow">
+    <div class="reveal u-mb">
+      <p class="eyebrow">${eyebrow}</p>
+      <h2 class="display display--xl u-mt-s" id="${id}-t">${title}</h2>
+    </div>
+    <dl class="data reveal">
+      ${pairs.map(([q, a]) => `<div><dt>${q}</dt><dd>${a}</dd></div>`).join('')}
+    </dl>
+  </div>
+</section>`;
+}
+
 export function orgLd(extra = {}) {
   const o = {
     '@context': 'https://schema.org',
@@ -320,7 +355,16 @@ export function orgLd(extra = {}) {
     logo: abs('/assets/img/logo-lockup.png'),
     image: abs('/assets/img/og-kachinova.jpg'),
     slogan: SITE.claim,
-    areaServed: { '@type': 'Country', name: 'Japan' },
+    /* MEO: the served area is stated as places, not as a country, so Google
+       can associate the business with 渋谷 rather than with "Japan". */
+    areaServed: [
+      ...AREA.primary.map((n) => ({ '@type': 'AdministrativeArea', name: `東京都${n}` })),
+      ...AREA.secondary.map((n) => ({ '@type': 'AdministrativeArea', name: `東京都${n}` })),
+    ],
+    knowsAbout: [
+      '中古区分マンションの買取', 'マンション買取再販', '不動産テック', 'PropTech',
+      'スマートホーム', '省エネリノベーション', '既存住宅の再価値化',
+    ],
     inLanguage: 'ja',
     ...extra,
   };
@@ -329,6 +373,12 @@ export function orgLd(extra = {}) {
   if (COMPANY.fax) o.faxNumber = COMPANY.fax;
   if (COMPANY.email) o.email = COMPANY.email;
   if (COMPANY.founded) o.foundingDate = COMPANY.founded.replace('年', '');
+  /* Deliberately absent until confirmed, because each would be a claim:
+       geo            — coordinates (take them from the verified GBP pin)
+       openingHours   — business hours
+       sameAs         — Google Business Profile / social URLs
+       aggregateRating — never self-asserted
+     See MEO_CHECKLIST.md. */
   return o;
 }
 

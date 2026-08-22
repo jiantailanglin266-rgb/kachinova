@@ -166,9 +166,9 @@ export default {
   path: '/technology.html',
   nav: '/technology.html',
   priority: '0.9',
-  title: 'TECHNOLOGY｜AI・スマートホーム・省エネ技術 - KACHINOVA',
+  title: 'TECHNOLOGY｜AI不動産・スマートホーム・省エネ技術 - KACHINOVA',
   description:
-    'KACHINOVA が不動産に持ち込む技術領域。AIとデータによる市場・物件・需要・価格の分析、スマートホーム、エネルギー最適化。それぞれの開発ステータスを明示して開示します。',
+    '渋谷の不動産テック企業 KACHINOVA が不動産に持ち込む技術領域。AIとデータによる市場・物件・需要・価格の分析、スマートホーム、エネルギー最適化。実装していない機能は「稼働中」と表示せず、開発ステータスを明示します。',
   jsonld: [breadcrumbLd([{ name: 'HOME', href: '/' }, { name: 'TECHNOLOGY', href: '/technology.html' }])],
   body,
 };

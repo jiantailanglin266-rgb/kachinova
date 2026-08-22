@@ -85,9 +85,9 @@ export default {
   path: '/company.html',
   nav: '/company.html',
   priority: '0.8',
-  title: 'COMPANY｜会社概要 - KACHINOVA',
+  title: '会社概要｜株式会社KACHINOVA（東京都渋谷区桜丘町）',
   description:
-    'KACHINOVA の会社概要。商号・代表者・所在地・宅地建物取引業免許などの企業情報と、お取引にあたってご確認いただきたい事項を掲載しています。',
+    '株式会社KACHINOVA の会社概要。所在地は東京都渋谷区桜丘町29-24。宅地建物取引業免許 東京都知事（1）第114064号。事業内容・連絡先と、お取引にあたってご確認いただきたい事項を掲載しています。',
   jsonld: [
     breadcrumbLd([{ name: 'HOME', href: '/' }, { name: 'COMPANY', href: '/company.html' }]),
     /* Address, telephone and email are emitted because they are confirmed.
