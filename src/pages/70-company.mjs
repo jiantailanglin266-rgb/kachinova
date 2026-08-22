@@ -13,7 +13,7 @@ const ROWS = [
   ['電話 ／ TEL', COMPANY.tel ? telLink() : fact(null)],
   ['FAX', COMPANY.fax ? `<span>${COMPANY.fax}</span>` : fact(null)],
   ['メール ／ EMAIL', COMPANY.email ? mailLink() : fact(null)],
-  ['宅地建物取引業免許 ／ LICENSE', fact(COMPANY.license, '免許番号は、免許証の記載どおりに掲載します。未確定の情報は一切記載しません。')],
+  ['宅地建物取引業免許 ／ LICENSE', fact(COMPANY.license, COMPANY.license ? '' : '免許番号は免許証の記載どおりに掲載します。未確定の情報は一切記載しません。')],
   ['宅地建物取引士 ／ LICENSED AGENT', fact(COMPANY.licenseHolder)],
   ['事業内容 ／ BUSINESS', `<ul style="display:grid;gap:.4rem">${COMPANY.businesses.map((b) => `<li>・${b}</li>`).join('')}</ul>`],
 ];
